@@ -1,35 +1,33 @@
 package brains.geek;
 
-
-import org.w3c.dom.ls.LSOutput;
-
 public class Main {
 
     public static void main(String[] args) {
-        Cat barsik = new Cat("Барсик");
-        System.out.println(barsik.jump(1.5));
-        Cat mashka = new Cat ("Машка");
-        System.out.println(mashka.run(650.0));
+        Cat cat = new Cat("Barsik", 5);
+        Plate plate = new Plate(100);
+        plate.info();
+        cat.eat(plate);
+        plate.info();
 
-        //Кот, которому в конструкторе можно задать ограничения по дистанции бега и прыжка
-        Cat semen = new Cat ("Семен", 700,2.7);
-        System.out.println(semen.run(650.5));
-        System.out.println(semen.jump(2.4));
+        Cat[] cats = new Cat[4];
+        Plate bigPlate = new Plate(250);
+        cats[0] = new Cat("Stepa", 80);
+        cats[1] = new Cat ("Murka", 60);
+        cats[2] = new Cat ("Felix", 100);
+        cats[3] = new Cat ("Pushok", 50);
+        for (int i = 0; i < cats.length; i++) {
+            cats[i].eat(bigPlate);
+            System.out.println("Cытый котик? - " + cats[i].getRepletion());
+        }
 
-        Dog bagz = new Dog ("Багз");
-        System.out.println(bagz.jump(3));
-        System.out.println(bagz.run(400));
-        System.out.println(bagz.swim(8.5));
+        // Наполним тарелку
 
-        //Пес, которому в конструкторе можно задать ограничения по дистанции бега, прыжка и плавания
+        bigPlate.topUpPlate(200);
 
-        Dog pluto = new Dog("Плуто", 1200.0, 50.0, 3);
-        System.out.println(pluto.jump(2.5));
-        System.out.println(pluto.run(900));
-        System.out.println(pluto.swim(32.4));
-
-        System.out.println("Всего животных: " + Animal.getCountAnimals());
-        System.out.println("Всего котов: " + Cat.getCountCats());
-        System.out.println("Всего собак: " +Dog.getCountDogs());
+        //Накормим последнего голодающего
+        cats[3].eat(bigPlate);
+        //Проверим сытость
+        System.out.println("Cытый котик? - " + cats[3].getRepletion());
+        bigPlate.info();
     }
 }
