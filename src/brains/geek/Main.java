@@ -1,33 +1,70 @@
 package brains.geek;
 
-public class Main {
+import javax.swing.*;
+import java.awt.*;
+
+public class Main extends JFrame {
+    private int x1 = 0, x2 = 500, x3 = 250;
+    private int y1 = 0, y2 = 0, y3 = 500;
+    private volatile boolean paint = false;
+    private DrawPanel dPanel;
+
+    public Main() {
+        setTitle("Окно");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBounds(300, 300, 200, 60);
+        setVisible(true);
+        JButton button = new JButton("Нажмите");
+        setLayout(new BorderLayout());
+        add(button, BorderLayout.NORTH);
+        setResizable(false);
+        dPanel = new DrawPanel();
+        add(dPanel);
+
+        button.addActionListener(e -> {
+            setBounds(300, 300, 600, 600);
+            System.out.println("Кнопка нажата");
+            paint = true;
+            remove(button);
+        });
+        while (!paint) {
+            Thread.onSpinWait();
+        }
+        paintOval();
+    }
 
     public static void main(String[] args) {
-        Cat cat = new Cat("Barsik", 5);
-        Plate plate = new Plate(100);
-        plate.info();
-        cat.eat(plate);
-        plate.info();
-
-        Cat[] cats = new Cat[4];
-        Plate bigPlate = new Plate(250);
-        cats[0] = new Cat("Stepa", 80);
-        cats[1] = new Cat ("Murka", 60);
-        cats[2] = new Cat ("Felix", 100);
-        cats[3] = new Cat ("Pushok", 50);
-        for (int i = 0; i < cats.length; i++) {
-            cats[i].eat(bigPlate);
-            System.out.println("Cытый котик? - " + cats[i].getRepletion());
+        new Main();
+    }
+    private void paintOval () {
+        for(int i = 0; i<220; i++){
+            x1++;
+            y1++;
+            x2--;
+            y2++;
+            y3--;
+            dPanel.repaint();
+            try {
+                Thread.sleep(50);
+            }catch (Exception ignored){}
         }
+    }
 
-        // Наполним тарелку
+    private class DrawPanel extends JPanel {
+        @Override
+        public void paintComponent(Graphics g){
+            if(paint) {
+                g.setColor(Color.WHITE);
+                g.fillRect(0,0,this.getWidth(),this.getHeight());
 
-        bigPlate.topUpPlate(200);
+                g.setColor(new Color(255, 0, 0, 150));
+                g.fillOval(x1,y1,100,100);
+                g.setColor(new Color(0, 255, 0, 150));
+                g.fillOval(x2,y2,100,100);
+                g.setColor(new Color(0, 0, 255, 150));
+                g.fillOval(x3,y3,100,100);
 
-        //Накормим последнего голодающего
-        cats[3].eat(bigPlate);
-        //Проверим сытость
-        System.out.println("Cытый котик? - " + cats[3].getRepletion());
-        bigPlate.info();
+            }
+        }
     }
 }
